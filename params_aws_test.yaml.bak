@@ -1,0 +1,13 @@
+awsqueue: "nfcore-scrna-queue-od"
+awsregion: "us-east-1"
+awscli: "/usr/bin/aws"
+
+outdir: "s3://my-nfcore-scrna-1/results"
+
+# use prebuilt human reference from AWS iGenomes + fast aligner
+genome: "GRCh38"
+aligner: "star"
+protocol: "10XV3"
+
+# convenience for our local config (if you use it)
+s3_bucket: "my-nfcore-scrna-1"

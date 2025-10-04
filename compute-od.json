@@ -1,0 +1,11 @@
+{
+  "type": "EC2",
+  "allocationStrategy": "BEST_FIT_PROGRESSIVE",
+  "minvCpus": 0,
+  "desiredvCpus": 0,
+  "maxvCpus": 2,
+  "instanceTypes": ["m6i.large","c6i.large"],
+  "subnets": [ "subnet-01d75599274ba786f","subnet-047ee4d98f4d21b19","subnet-0cd51352d03f6b9c0","subnet-0bcdcf7a6cbd72c7c","subnet-0aa3171a0217561d2","subnet-05fa43fffdad25023" ],
+  "securityGroupIds": ["sg-040f1724b659cfd05"],
+  "instanceRole": "arn:aws:iam::435455014187:instance-profile/ecsInstanceRole"
+}

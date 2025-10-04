@@ -1,0 +1,4 @@
+outdir: "s3://my-nfcore-scrna-1/results"
+genome: "GRCh38"
+aligner: "star"
+protocol: "10XV3"
