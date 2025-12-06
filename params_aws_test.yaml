@@ -1,4 +1,6 @@
 outdir: "s3://my-nfcore-scrna-1/results"
+input: "https://github.com/nf-core/test-datasets/raw/scrnaseq/samplesheet-2-0.csv"
 genome: "GRCh38"
-aligner: "star"
 protocol: "10XV3"
+skip_cellbender: true
+save_align_intermeds: true
