@@ -40,18 +40,18 @@ workflow SCRNASEQ {
     }
 
     // general input and params
-    ch_genome_fasta         = params.fasta                ? file(params.fasta, checkIfExists: true)    : []
-    ch_gtf                  = params.gtf                  ? file(params.gtf, checkIfExists: true)      : []
-    ch_transcript_fasta     = params.transcript_fasta     ? file(params.transcript_fasta)              : []
-    ch_motifs               = params.motifs               ? file(params.motifs)                        : []
-    ch_txp2gene             = params.txp2gene             ? file(params.txp2gene, checkIfExists: true) : []
+    ch_genome_fasta         = params.fasta                ? file(params.fasta, checkIfExists: true)    : false
+    ch_gtf                  = params.gtf                  ? file(params.gtf, checkIfExists: true)      : false
+    ch_transcript_fasta     = params.transcript_fasta     ? file(params.transcript_fasta)              : false
+    ch_motifs               = params.motifs               ? file(params.motifs)                        : false
+    ch_txp2gene             = params.txp2gene             ? file(params.txp2gene, checkIfExists: true) : false
 
     if (params.barcode_whitelist) {
         ch_barcode_whitelist = file(params.barcode_whitelist, checkIfExists: true)
     } else if (protocol_config.containsKey("whitelist")) {
         ch_barcode_whitelist = file("$projectDir/${protocol_config['whitelist']}", checkIfExists: true)
     } else {
-        ch_barcode_whitelist = []
+        ch_barcode_whitelist = false
     }
 
     // samplesheet - this is passed to the MTX conversion functions to add metadata to the
@@ -59,12 +59,12 @@ workflow SCRNASEQ {
     ch_input = file(params.input)
 
     //kallisto params
-    ch_kallisto_index = params.kallisto_index ? file(params.kallisto_index, checkIfExists: true) : []
-    kb_t1c            = params.kb_t1c         ? file(params.kb_t1c, checkIfExists: true) : []
-    kb_t2c            = params.kb_t2c         ? file(params.kb_t2c, checkIfExists: true) : []
+    ch_kallisto_index = params.kallisto_index ? file(params.kallisto_index, checkIfExists: true) : false
+    kb_t1c            = params.kb_t1c         ? file(params.kb_t1c, checkIfExists: true) : false
+    kb_t2c            = params.kb_t2c         ? file(params.kb_t2c, checkIfExists: true) : false
 
     //simpleaf params
-    ch_simpleaf_index   = params.simpleaf_index ? file(params.simpleaf_index, checkIfExists: true) : []
+    ch_simpleaf_index   = params.simpleaf_index ? file(params.simpleaf_index, checkIfExists: true) : false
 
     //star params
     star_index        = params.star_index ? file(params.star_index, checkIfExists: true) : null
@@ -98,6 +98,8 @@ workflow SCRNASEQ {
         } else {
             ch_genome_fasta = Channel.value( ch_genome_fasta )
         }
+    } else {
+        ch_genome_fasta = Channel.empty()
     }
 
     //
@@ -110,10 +112,12 @@ workflow SCRNASEQ {
         } else {
             ch_gtf = Channel.value( ch_gtf )
         }
+    } else {
+        ch_gtf = Channel.empty()
     }
 
     // filter gtf
-    ch_filter_gtf = ch_gtf ? GTF_GENE_FILTER ( ch_genome_fasta, ch_gtf ).gtf : []
+    ch_filter_gtf = params.gtf ? GTF_GENE_FILTER ( ch_genome_fasta, ch_gtf ).gtf : Channel.empty()
 
     // Run kallisto bustools pipeline
     if (params.aligner == "kallisto") {
@@ -146,7 +150,7 @@ workflow SCRNASEQ {
             protocol_config['protocol'],
             params.simpleaf_umi_resolution,
             ch_fastq,
-            [] // for existing map dir; not applicable
+            false // for existing map dir; not applicable
         )
         ch_versions = ch_versions.mix(SIMPLEAF.out.ch_versions)
         ch_multiqc_files = ch_multiqc_files.mix(SIMPLEAF.out.quant.map{ _meta, it -> it })
