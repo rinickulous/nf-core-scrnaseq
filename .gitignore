@@ -1,14 +1,18 @@
-.nextflow*
+# Nextflow working files
+.nextflow/
+.nextflow.log*
 work/
-data/
 results/
-.DS_Store
-testing/
-testing*
-*.pyc
-null/
-log/
-reports/
-testme.sh
-.nf-test*
-.vscode
+
+# Generated reports (keep in S3 only)
+report.html
+timeline.html
+trace.txt
+multiqc_report.html
+
+# Nextflow cache
+.nf-test/
+
+# IDE
+.vscode/
+.idea/
